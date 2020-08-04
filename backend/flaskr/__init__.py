@@ -97,7 +97,7 @@ def create_app(test_config=None):
     return jsonify({
       'success': True,
       'questions': current_ques,
-      'totalQuestions': len(Question.query.all()),
+      'total_questions': len(Question.query.all()),
       'categories': cat_dic
     })
 
@@ -125,7 +125,7 @@ def create_app(test_config=None):
         'success': True,
         'deleted': ques_id,
         'questions': current_ques,
-        'totalQuestions': len(Question.query.all())
+        'total_questions': len(Question.query.all())
         })
 
     except:
@@ -161,7 +161,7 @@ def create_app(test_config=None):
         'success': True,
         'created': question.id,
         'questions': current_ques,
-        'totalQuestions': len(Question.query.all())
+        'total_questions': len(Question.query.all())
       })
 
     except:
@@ -178,6 +178,23 @@ def create_app(test_config=None):
   only question that include that string within their question. 
   Try using the word "title" to start. 
   '''
+  @app.route('/questions/search', methods=['POST'])
+  def search_ques():
+    body = request.get_json()
+    searchTerm = body.get('searchTerm', None)
+
+    try:
+      selection = Question.query.order_by(Question.id).filter(Question.question.ilike('%{}%'.format(searchTerm)))
+      current_ques = paginate_questions(request, selection)
+      app.logger.info(len(selection.all()))
+      return jsonify({
+        'success': True,
+        'questions': current_ques,
+        'total_questions': len(selection.all())
+      })
+    except:
+      abort(422)
+
 
   '''
   @TODO: 
@@ -187,6 +204,27 @@ def create_app(test_config=None):
   categories in the left column will cause only questions of that 
   category to be shown. 
   '''
+  @app.route('/categories/<int:cat_id>/questions')
+  def get_ques_by_cat(cat_id):
+    try:
+      # app.logger.info(type(cat_id))
+      selection = Question.query.filter(Question.category == cat_id).all()
+      
+      if selection is None:
+        # No Questions Found!
+        abort(404)
+      
+      current_ques = paginate_questions(request, selection)
+      
+      return jsonify({
+        'success': True,
+        'questions': current_ques,
+        'total_questions': len(selection),
+        'current_category': cat_id
+      })
+    
+    except:
+      abort(422)
 
 
   '''
@@ -206,7 +244,7 @@ def create_app(test_config=None):
   Create error handlers for all expected errors 
   including 404 and 422. 
   '''
-  
+
   return app
 
     
