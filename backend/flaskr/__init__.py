@@ -207,7 +207,6 @@ def create_app(test_config=None):
   @app.route('/categories/<int:cat_id>/questions')
   def get_ques_by_cat(cat_id):
     try:
-      # app.logger.info(type(cat_id))
       selection = Question.query.filter(Question.category == cat_id).all()
       
       if selection is None:
@@ -238,12 +237,85 @@ def create_app(test_config=None):
   one question at a time is displayed, the user is allowed to answer
   and shown whether they were correct or not. 
   '''
+  @app.route('/quizzes', methods=['POST'])
+  def play_quizz():
+    body = request.get_json()
+
+    prev_ques = body.get('previous_questions', None)
+    quiz_category = body.get('quiz_category', None)
+
+    try:
+      if not quiz_category['id']:
+        # If No Category selected
+        # Retrieve all questions from DB
+        selection = Question.query.all()
+
+      else:
+        # Retrieve only questions for selected category
+        selection = Question.query.filter(Question.category == quiz_category['id']).all()
+      
+      app.logger.info(selection)
+      if selection is None:
+        # No Questions Found!
+        abort(404)
+      
+      # Select a random question by category
+      question = random.choice([ques for ques in selection if ques.format() not in prev_ques])
+
+      # if not prev_ques:
+      #   # Select a random question by category
+      #   question = random.choice(selection)
+      #   app.logger.info(question)
+
+      # else:
+      #   question = random.choice([ques for ques in selection if ques.format() not in prev_ques])
+      #   app.logger.info(question)
+        
+      return jsonify({
+        'success': True,
+        'question': question.format()
+      })
+      
+    except:
+      abort(422)
+
 
   '''
   @TODO: 
   Create error handlers for all expected errors 
   including 404 and 422. 
   '''
+  @app.errorhandler(404)
+  def not_found(error):
+    return jsonify({
+      'success': False,
+      'error': 404,
+      'message': 'Resource not found!'
+    }), 404
+      
+  @app.errorhandler(422)
+  def unprocessable(error):
+    return jsonify({
+      'success': False,
+      'error': 422,
+      'message': 'Unprocessable Request!'
+    }), 422
+    
+  @app.errorhandler(400)
+  def bad_request(error):
+    return jsonify({
+      'success': False,
+      'error': 400,
+      'message': 'Bad Request!'
+    }), 400
+    
+  @app.errorhandler(405)
+  def not_allowed(error):
+    return jsonify({
+      'success': False,
+      'error': 405,
+      'message': 'Method not allowed!'
+    }), 405
 
   return app
 
