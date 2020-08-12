@@ -38,7 +38,7 @@ psql trivia < trivia.psql
 
 **Note:** Database owner changed from `caryn` to `postgres`
 
-Used the following command instead:
+Used the following command for Windows instead:
 ```bash
 psql -U postgres -d trivia --set ON_ERROR_STOP=on -f trivia.psql
 ```
@@ -95,6 +95,14 @@ GET '/categories'
 '6' : "Sports"}
 
 ```
+## Endpoints
+GET '/categories'
+GET '/questions'
+DELETE '/questions/<int:ques_id>'
+POST '/questions'
+POST '/questions/search'
+GET '/categories/<int:cat_id>/questions'
+POST '/quizzes'
 
 
 ## Testing
