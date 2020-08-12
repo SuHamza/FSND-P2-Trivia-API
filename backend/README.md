@@ -95,7 +95,9 @@ GET '/categories'
 '6' : "Sports"}
 
 ```
+# API Reference
 ## Endpoints
+```
 GET '/categories'
 GET '/questions'
 DELETE '/questions/<int:ques_id>'
@@ -103,7 +105,18 @@ POST '/questions'
 POST '/questions/search'
 GET '/categories/<int:cat_id>/questions'
 POST '/quizzes'
+```
 
+### GET '/categories'
+- Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category.
+- **Request Arguments:** None
+- **Returns:** An object with a single key, `categories`, that contains a object of `id: category_string` key:value pairs. 
+{'1' : "Science",
+'2' : "Art",
+'3' : "Geography",
+'4' : "History",
+'5' : "Entertainment",
+'6' : "Sports"}
 
 ## Testing
 To run the tests, run
