@@ -209,11 +209,15 @@ def create_app(test_config=None):
     try:
       selection = Question.query.filter(Question.category == cat_id).all()
       
-      if selection is None:
-        # No Questions Found!
-        abort(404)
+      # if selection is None:
+      #   # No Questions Found!
+      #   abort(404)
       
       current_ques = paginate_questions(request, selection)
+
+      if len(current_ques) == 0:
+        # No Questions Found!
+        abort(404)
       
       return jsonify({
         'success': True,
