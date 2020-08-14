@@ -22,6 +22,9 @@ pip install -r requirements.txt
 
 This will install all of the required packages we selected within the `requirements.txt` file.
 
+**Note:** Most of the specified package versions are outdated and might cause some errors!
+It is better to remove the package versions from `requirements.txt`before installation, or update any packages that might cause errors.
+
 ##### Key Dependencies
 
 - [Flask](http://flask.pocoo.org/)  is a lightweight backend microservices framework. Flask is required to handle requests and responses.
@@ -38,7 +41,7 @@ psql trivia < trivia.psql
 
 **Note:** Database owner changed from `caryn` to `postgres`
 
-Used the following command for Windows instead:
+Used the following command for *Windows* instead:
 ```bash
 psql -U postgres -d trivia --set ON_ERROR_STOP=on -f trivia.psql
 ```
@@ -73,28 +76,7 @@ One note before you delve into your tasks: for each endpoint you are expected to
 8. Create a POST endpoint to get questions to play the quiz. This endpoint should take category and previous question parameters and return a random questions within the given category, if provided, and that is not one of the previous questions. 
 9. Create error handlers for all expected errors including 400, 404, 422 and 500. 
 
-REVIEW_COMMENT
-```
-This README is missing documentation of your endpoints. Below is an example for your endpoint to get all categories. Please use it as a reference for creating your documentation and resubmit your code. 
 
-Endpoints
-GET '/categories'
-GET ...
-POST ...
-DELETE ...
-
-GET '/categories'
-- Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
-- Request Arguments: None
-- Returns: An object with a single key, categories, that contains a object of id: category_string key:value pairs. 
-{'1' : "Science",
-'2' : "Art",
-'3' : "Geography",
-'4' : "History",
-'5' : "Entertainment",
-'6' : "Sports"}
-
-```
 # API Reference
 ## Endpoints
 ```
@@ -109,19 +91,29 @@ POST '/quizzes'
 
 ### GET '/categories'
 - Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category.
-- **Request Arguments:** None
-- **Returns:** An object with a single key, `categories`, that contains a object of `id: category_string` key:value pairs. 
+- Request Arguments: None
+- Returns: A dictionary of all available categories, `categories`, that contains an object of `id: category_string` key:value pairs. In addition to a success value.
+
+- `curl http://127.0.0.1:5000/categories`
 ```
-{'1' : "Science",
-'2' : "Art",
-'3' : "Geography",
-'4' : "History",
-'5' : "Entertainment",
-'6' : "Sports"}
+{
+  "categories": {
+    "1": "Science",
+    "2": "Art",
+    "3": "Geography",
+    "4": "History",
+    "5": "Entertainment",
+    "6": "Sports"
+  },
+  "success": true
+}
 ```
 ### GET '/questions'
-- **Returns** a list of question objects, success value, total number of questions, current category and all available categories.
-- Results are paginated in groups of **10**. Includes a request argument to choose page number, starting from 1.
+- Retrieves all the questions from the database.
+- Request Arguments: Includes an optional request argument to choose page number, starting from 1.
+- Returns a list of question objects, success value, total number of questions, current category and all available categories.
+- Results are paginated in groups of **10**. 
+
 - Sample: `curl http://127.0.0.1:5000/questions`
 
 ```
@@ -211,9 +203,10 @@ POST '/quizzes'
 }
 ```
 
-### DELETE '/questions/<int:ques_id>'
+### DELETE '/questions/{ques_id}'
 
 - Deletes a question using a question ID. 
+- Request Arguments: a Question ID, `ques_id`.
 - Returns the id of the deleted question, success value, total number of questions, and question list based on current page number to update the frontend.
 
 - `curl -X DELETE http://127.0.0.1:5000/questions/4`
@@ -297,8 +290,200 @@ POST '/quizzes'
   "total_questions": 18
 }
 ```
+
+### POST '/questions'
+
+- Creates a new question, which will require the question and answer text, category, and difficulty score.
+- Returns the id of the created question, success value, total number of questions, and question list based on current page number to update the frontend.
+
+- `curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{"question":"What actor did author Anne Rice first denounce, then praise in the role of her beloved Lestat?", "answer":"Tom Cruise", "difficulty":"4", "category":"5"}'`
+
+```
+{
+  "created": 43,
+  "questions": [
+    {
+      "answer": "Edward Scissorhands",
+      "category": 5,
+      "difficulty": 3,
+      "id": 6,
+      "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
+    },
+    {
+      "answer": "Muhammad Ali",
+      "category": 4,
+      "difficulty": 1,
+      "id": 9,
+      "question": "What boxer's original name is Cassius Clay?"
+    },
+    {
+      "answer": "Brazil",
+      "category": 6,
+      "difficulty": 3,
+      "id": 10,
+      "question": "Which is the only team to play in every soccer World Cup tournament?"
+    },
+    {
+      "answer": "Uruguay",
+      "category": 6,
+      "difficulty": 4,
+      "id": 11,
+      "question": "Which country won the first ever soccer World Cup in 1930?"
+    },
+    {
+      "answer": "George Washington Carver",
+      "category": 4,
+      "difficulty": 2,
+      "id": 12,
+      "question": "Who invented Peanut Butter?"
+    },
+    {
+      "answer": "Lake Victoria",
+      "category": 3,
+      "difficulty": 2,
+      "id": 13,
+      "question": "What is the largest lake in Africa?"
+    },
+    {
+      "answer": "The Palace of Versailles",
+      "category": 3,
+      "difficulty": 3,
+      "id": 14,
+      "question": "In which royal palace would you find the Hall of Mirrors?"
+    },
+    {
+      "answer": "Agra",
+      "category": 3,
+      "difficulty": 2,
+      "id": 15,
+      "question": "The Taj Mahal is located in which Indian city?"
+    },
+    {
+      "answer": "Escher",
+      "category": 2,
+      "difficulty": 1,
+      "id": 16,
+      "question": "Which Dutch graphic artist\u2013initials M C was a creator of optical illusions?"
+    },
+    {
+      "answer": "Mona Lisa",
+      "category": 2,
+      "difficulty": 3,
+      "id": 17,
+      "question": "La Giaconda is better known as what?"
+    }
+  ],
+  "success": true,
+  "total_questions": 19
+}
+```
+
+### POST '/questions/search'
+- Retrieves questions based on a search term. 
+- Request Arguments: a search term, `searchTerm`.
+- Returns any questions for whom the search term is a substring of the question, a success value, and total number of questions in the search result.
+
+- `curl http://127.0.0.1:5000/questions/search -X POST -H "Content-Type: application/json" -d '{"searchTerm":"title"}'` 
+
+```
+{
+  "questions": [
+    {
+      "answer": "Edward Scissorhands",
+      "category": 5,
+      "difficulty": 3,
+      "id": 6,
+      "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
+    },
+    {
+      "answer": "Maya Angelou",
+      "category": 4,
+      "difficulty": 2,
+      "id": 24,
+      "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+    }
+  ],
+  "success": true,
+  "total_questions": 2
+}
+```
+
+### GET '/categories/{cat_id}/questions'
+- Retrieves all questions based on category.
+- Request Arguments:a Category ID, `cat_id`.
+- Returns the ID of the current category, a success value, a list of all the questions in the specified category, and the total number of questions retrieved.
+
+- `curl http://127.0.0.1:5000/categories/1/questions`
+
+```
+{
+  "current_category": 1,
+  "questions": [
+    {
+      "answer": "The Liver",
+      "category": 1,
+      "difficulty": 4,
+      "id": 20,
+      "question": "What is the heaviest organ in the human body?"
+    },
+    {
+      "answer": "Alexander Fleming",
+      "category": 1,
+      "difficulty": 3,
+      "id": 21,
+      "question": "Who discovered penicillin?"
+    },
+    {
+      "answer": "Blood",
+      "category": 1,
+      "difficulty": 4,
+      "id": 22,
+      "question": "Hematology is a branch of medicine involving the study of what?"
+    }
+  ],
+  "success": true,
+  "total_questions": 3
+}
+```
+
+### POST '/quizzes'
+- Retrieves questions to play the quizz. 
+- Request Arguments: quizz category, `quiz_category`, and a list of previous questions, `previous_questions`.
+- Returns a random question within the given category, if provided, and that is not one of the previous questions. In addition to a success value.
+
+- `curl http://127.0.0.1:5000/quizzes -X POST -H "Content-Type: application/json" -d '{"previous_questions":["Who discovered penicillin?"], "quiz_category":{ "type": "Science", "id": 1}}'`
+
+```
+{
+  "question": {
+    "answer": "Blood",
+    "category": 1,
+    "difficulty": 4,
+    "id": 22,
+    "question": "Hematology is a branch of medicine involving the study of what?"
+  },
+  "success": true
+}
+```
+## Error Handling
+
+Errors are returned as JSON objects in the following format:
+```
+{
+    "success": False, 
+    "error": 404,
+    "message": "Resource not found!"
+}
+```
+The API will return four error types when requests fail:
+
+- 400: Bad Request
+- 404: Resource Not Found
+- 405: Method Not Allowed
+- 422: Not Processable
+
 ## Testing
-To run the tests, run
+In order to run tests navigate to the `backend` folder and run the following commands:
 ```
 dropdb trivia_test
 createdb trivia_test
