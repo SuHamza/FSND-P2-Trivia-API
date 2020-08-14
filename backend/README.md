@@ -294,6 +294,7 @@ POST '/quizzes'
 ### POST '/questions'
 
 - Creates a new question, which will require the question and answer text, category, and difficulty score.
+- Request Arguments: question text, `question`, answer text, `answer`, difficulty score, `difficulty`, and category ID, `category`.
 - Returns the id of the created question, success value, total number of questions, and question list based on current page number to update the frontend.
 
 - `curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{"question":"What actor did author Anne Rice first denounce, then praise in the role of her beloved Lestat?", "answer":"Tom Cruise", "difficulty":"4", "category":"5"}'`
